@@ -15,6 +15,7 @@ export const TextBlock: FC<{
     const [valueText, setValueText] = useState(el.text);
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id })
     const inputRef = useRef<HTMLInputElement | null>(null)
+    const blockRef = useRef<HTMLInputElement | null>(null)
     useEffect(() => {
         if (activeBlockId === id) {
             const timer = setTimeout(() => {
@@ -23,6 +24,15 @@ export const TextBlock: FC<{
             return () => clearTimeout(timer);
         }
     }, [activeBlockId, id]);
+    useEffect(() => {
+        // Добавляем обработчик событий
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            // Удаляем обработчик событий при размонтировании
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
     const handleChangeText = (e: ChangeEvent<HTMLInputElement>) => {
         setValueText(e.target.value);
     };
@@ -40,6 +50,15 @@ export const TextBlock: FC<{
             setActiveBlockId(id); // Устанавливаем текущий блок активным
         }
     };
+    const handleClickOutside = (event: MouseEvent) => {
+        if (blockRef.current && !blockRef.current.contains(event.target as Node)) {
+            if (valueText !== el.text) {
+                dispatch(updateTextBlock({ id: id, changes: { text: valueText } }));
+            }
+            setActiveBlockId(null);
+        }
+    };
+
     const style = {
         transition,
         transform: CSS.Transform.toString(transform),
@@ -52,6 +71,7 @@ export const TextBlock: FC<{
     return (<div>
         {activeBlockId === id ? (
             <div
+                ref={blockRef}
                 onKeyDown={(e) => {
                     if (e.key === "Enter") {
                         offChangeMode();
@@ -61,6 +81,7 @@ export const TextBlock: FC<{
                     ref={inputRef}
                     value={valueText}
                     onChange={handleChangeText}
+
                     style={{
                         color: el.textColor,
                         fontSize: el.textSize + "px",

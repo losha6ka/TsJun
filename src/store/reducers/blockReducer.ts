@@ -4,7 +4,7 @@ import { CustomBlockI, TextBlockI } from "../../types/MainTypes";
 const initialState: CustomBlockI = {
     textBlock: [
         {
-            id: 1,
+            id: 0,
             text: "text",
             textSize: "16",
             textWeight: "600",
