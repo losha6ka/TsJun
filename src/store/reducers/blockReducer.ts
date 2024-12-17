@@ -2,6 +2,9 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CustomBlockI, TextBlockI } from "../../types/MainTypes";
 
 const initialState: CustomBlockI = {
+    header: [],
+    main: [],
+    footer: [],
     textBlock: [
         {
             id: 0,
@@ -23,7 +26,7 @@ const customBlockSlice = createSlice({
     name: "customBlockSlice",
     initialState,
     reducers: {
-        createNewBlock: (state, action: PayloadAction<TextBlockI>) => {
+        createNewBlockHeader: (state, action: PayloadAction<TextBlockI>) => {
             if (state.textBlock) {
                 const newTBlock = {
                     id: action.payload.id,
@@ -35,7 +38,37 @@ const customBlockSlice = createSlice({
                     decorationOption: action.payload.decorationOption,
                     weightOption: action.payload.weightOption
                 }
-                state.textBlock?.push(newTBlock)
+                state.header?.push(newTBlock)
+            }
+        },
+        createNewBlockMain: (state, action: PayloadAction<TextBlockI>) => {
+            if (state.textBlock) {
+                const newTBlock = {
+                    id: action.payload.id,
+                    text: action.payload.text,
+                    textSize: action.payload.textSize,
+                    textWeight: action.payload.textWeight,
+                    textColor: action.payload.textColor,
+                    textDecoration: action.payload.textDecoration,
+                    decorationOption: action.payload.decorationOption,
+                    weightOption: action.payload.weightOption
+                }
+                state.main?.push(newTBlock)
+            }
+        },
+        createNewBlockFooter: (state, action: PayloadAction<TextBlockI>) => {
+            if (state.textBlock) {
+                const newTBlock = {
+                    id: action.payload.id,
+                    text: action.payload.text,
+                    textSize: action.payload.textSize,
+                    textWeight: action.payload.textWeight,
+                    textColor: action.payload.textColor,
+                    textDecoration: action.payload.textDecoration,
+                    decorationOption: action.payload.decorationOption,
+                    weightOption: action.payload.weightOption
+                }
+                state.footer?.push(newTBlock)
             }
         },
         updateTextBlock: (state, action: PayloadAction<{ id: number; changes: Partial<TextBlockI> }>) => {
@@ -51,5 +84,5 @@ const customBlockSlice = createSlice({
     }
 })
 
-export const { updateTextBlock, createNewBlock, reorderTextBlocks } = customBlockSlice.actions
+export const { updateTextBlock, createNewBlockHeader, createNewBlockMain, createNewBlockFooter, reorderTextBlocks } = customBlockSlice.actions
 export default customBlockSlice.reducer

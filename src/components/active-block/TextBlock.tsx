@@ -15,7 +15,7 @@ export const TextBlock: FC<{
     const [valueText, setValueText] = useState(el.text);
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id })
     const inputRef = useRef<HTMLInputElement | null>(null)
-    const blockRef = useRef<HTMLInputElement | null>(null)
+    const blockRef = useRef<HTMLInputElement | null>(null)      
     useEffect(() => {
         if (activeBlockId === id) {
             const timer = setTimeout(() => {

@@ -25,6 +25,9 @@ export interface TextBlockI {
     weightOption: string[]
 }
 export interface CustomBlockI {
+    header: any[],
+    main: any[],
+    footer: any[],
     textBlock: TextBlockI[],
     buttonsBlock: any[],
     imgBlock: any[]
