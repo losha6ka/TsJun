@@ -6,16 +6,16 @@ import { CSS } from "@dnd-kit/utilities";
 import { CustomBlockSet } from "../settings/CustomBlockSet";
 
 export const TextBlock: FC<{
-    el: { id: number; text: string; textColor: string; textSize: string; textWeight: string; textDecoration: string },
     id: number,
     activeBlockId: number | null,
-    setActiveBlockId: (id: number | null) => void
-}> = ({ el, id, activeBlockId, setActiveBlockId }) => {
+    setActiveBlockId: (id: number | null) => void,
+    blockText: any
+}> = ({ id, activeBlockId, setActiveBlockId, blockText }) => {
     const dispatch = useDispatch();
-    const [valueText, setValueText] = useState(el.text);
+    const [valueText, setValueText] = useState(blockText.text);
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id })
     const inputRef = useRef<HTMLInputElement | null>(null)
-    const blockRef = useRef<HTMLInputElement | null>(null)      
+    const blockRef = useRef<HTMLInputElement | null>(null)
     useEffect(() => {
         if (activeBlockId === id) {
             const timer = setTimeout(() => {
@@ -38,8 +38,8 @@ export const TextBlock: FC<{
     };
 
     const offChangeMode = () => {
-        if (valueText !== el.text) {
-            dispatch(updateTextBlock({ id: id, changes: { text: valueText } }));
+        if (valueText !== blockText.text) {
+            dispatch(updateTextBlock({ zone: blockText.zone, id: id, changes: { text: valueText } }));
         }
         setActiveBlockId(null); // Сброс активного блока
 
@@ -49,11 +49,12 @@ export const TextBlock: FC<{
         if (activeBlockId !== id) {
             setActiveBlockId(id); // Устанавливаем текущий блок активным
         }
+        console.log(blockText)
     };
     const handleClickOutside = (event: MouseEvent) => {
         if (blockRef.current && !blockRef.current.contains(event.target as Node)) {
-            if (valueText !== el.text) {
-                dispatch(updateTextBlock({ id: id, changes: { text: valueText } }));
+            if (valueText !== blockText.text) {
+                dispatch(updateTextBlock({ zone: blockText.zone, id: id, changes: { text: valueText } }));
             }
             setActiveBlockId(null);
         }
@@ -62,10 +63,10 @@ export const TextBlock: FC<{
     const style = {
         transition,
         transform: CSS.Transform.toString(transform),
-        color: el.textColor,
-        fontSize: el.textSize + "px",
-        fontWeight: el.textWeight,
-        textDecoration: el.textDecoration,
+        color: blockText.textColor,
+        fontSize: blockText.textSize + "px",
+        fontWeight: blockText.textWeight,
+        textDecoration: blockText.textDecoration,
 
     }
     return (<div>
@@ -81,14 +82,13 @@ export const TextBlock: FC<{
                     ref={inputRef}
                     value={valueText}
                     onChange={handleChangeText}
-
                     style={{
-                        color: el.textColor,
-                        fontSize: el.textSize + "px",
-                        fontWeight: el.textWeight,
-                        textDecoration: el.textDecoration,
+                        color: blockText.textColor,
+                        fontSize: blockText.textSize + "px",
+                        fontWeight: blockText.textWeight,
+                        textDecoration: blockText.textDecoration,
                         fontFamily: "inherit",
-                    }} /><CustomBlockSet id={el.id} inputRef={inputRef} /></div>
+                    }} /><CustomBlockSet blockText={blockText} id={blockText.id} inputRef={inputRef} /></div>
         ) : (
             <div
                 ref={activeBlockId !== id ? setNodeRef : undefined}

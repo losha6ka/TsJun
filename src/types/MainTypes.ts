@@ -20,15 +20,15 @@ export interface TextBlockI {
     // textFamily: string,
     textDecoration: string,
     textWeight: string,
-    id: number
-    decorationOption: string[],
-    weightOption: string[]
+    id: number,
+    zone: string | null
 }
 export interface CustomBlockI {
-    header: any[],
-    main: any[],
-    footer: any[],
-    textBlock: TextBlockI[],
+    header: TextBlockI[],
+    main: TextBlockI[],
+    footer: TextBlockI[],
+    decorationOption: string[],
+    weightOption: string[]
     buttonsBlock: any[],
     imgBlock: any[]
 }

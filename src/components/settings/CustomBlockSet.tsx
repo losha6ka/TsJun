@@ -4,43 +4,46 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { ColorSet, withColorSet } from "./HOC/ColorSet";
 import { TextSet } from "./HOC/TextSet";
-export const CustomBlockSet: FC<{ id: number, inputRef: any }> = ({ id, inputRef }) => {
-    const blockText = useSelector((state: RootState) => state.customBlock?.textBlock)
+interface CustomBlockSetProps {
+    id: number,
+    inputRef: any,
+    blockText: any
+}
+export const CustomBlockSet: FC<CustomBlockSetProps> = ({ id, inputRef, blockText }) => {
+    const decorationOption = useSelector((state: RootState) => state.customBlock?.decorationOption)
+    const weightOption = useSelector((state: RootState) => state.customBlock?.weightOption)
     const dispatch = useDispatch()
-
-    const handlerColorChange = (color: string, id: number) => {
-        dispatch(updateTextBlock({ id, changes: { ...blockText, textColor: color } }));
+    const handleUpdate = (property: string, value: string, id: number) => {
+        const changes = { ...blockText, [property]: value };
+        dispatch(updateTextBlock({ zone: blockText.zone, id, changes }));
         inputRef.current?.focus();
+    }
+    const handlerColorChange = (color: string, id: number) => {
+        handleUpdate("textColor", color, id)
     };
     const handlerSizeChange = (size: string, id: number) => {
-        dispatch(updateTextBlock({ id, changes: { ...blockText, textSize: size } }));
-        inputRef.current?.focus();
+        handleUpdate("textSize", size, id)
+
     }
     const handlerWeightChange = (weight: string, id: number) => {
-        dispatch(updateTextBlock({ id, changes: { ...blockText, textWeight: weight } }));
-        inputRef.current?.focus();
-
+        handleUpdate("textWeight", weight, id)
     }
     const handlerDecChange = (decoration: string, id: number) => {
-        dispatch(updateTextBlock({ id, changes: { ...blockText, textDecoration: decoration } }));
-        inputRef.current?.focus();
-
+        handleUpdate("textDecoration", decoration, id)
     }
     const ColorSetComponent = withColorSet(ColorSet)
     return <div>
-        {blockText?.filter((el) => el.id === id).map((el) => <div key={id}>
-            <ColorSetComponent onColorChange={handlerColorChange} id={id} />
-            <TextSet
-                onSizeChange={handlerSizeChange}
-                onWeightChange={handlerWeightChange}
-                onDecorationChange={handlerDecChange}
-                valueSize={el.textSize}
-                valueWeight={el.textWeight}
-                valueDec={el.textDecoration}
-                decorationOption={blockText[0].decorationOption}
-                weightOption={blockText[0].weightOption}
-                id={id}
-            />
-        </div>)}
+        <ColorSetComponent onColorChange={handlerColorChange} id={id} />
+        <TextSet
+            onSizeChange={handlerSizeChange}
+            onWeightChange={handlerWeightChange}
+            onDecorationChange={handlerDecChange}
+            valueSize={blockText.textSize}
+            valueWeight={blockText.textWeight}
+            valueDec={blockText.textDecoration}
+            decorationOption={decorationOption}
+            weightOption={weightOption}
+            id={id}
+        />
     </div>
 }
